@@ -13,7 +13,7 @@ Este projeto utiliza o Apache Airflow para automatizar a busca de voos promocion
 - Consulta voos com origem, destino e data definidos.
 - Processamento e limpeza dos dados retornados da API.
 - Armazenamento dos voos em uma tabela estruturada no PostgreSQL.
-- Em desenvolvimento: Análise dos dado e chatbot interativo.
+- Em desenvolvimento: Análise dos dados, chatbot interativo e alertas.
 
 ## Pré-requisitos
 
