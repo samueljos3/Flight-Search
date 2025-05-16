@@ -1,6 +1,6 @@
 # Flight Search
 
-Este projeto utiliza o Apache Airflow para automatizar a busca de voos por meio da API da Amadeus, organizando e armazenando os resultados em um banco de dados PostgreSQL para ser utilizado posteriormente em aplicações de análise de dados e IA.
+Este projeto utiliza o Apache Airflow para automatizar a busca de voos promocionais por meio da API da Amadeus, organizando e armazenando os resultados em um banco de dados PostgreSQL para ser utilizado posteriormente em aplicações de análise de dados e IA.
 
 ## 📁 Estrutura do Projeto
 
