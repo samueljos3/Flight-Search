@@ -22,11 +22,11 @@ Este projeto utiliza o Apache Airflow para automatizar a busca de voos promocion
 
 ### Conexão com a API Amadeus
 
-- **`api_connection_amadeus`
+- **`api_connection_amadeus` em connections no airflow (HTTP)
 
 ### Conexão com o PostgreSQL
 
-- **`postgres`
+- **`postgres` em connections no airflow (Postgres)
 
 ## 📌 Observações
 
