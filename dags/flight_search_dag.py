@@ -1,13 +1,17 @@
 from airflow import DAG
-from airflow.operators.python_operator import PythonOperator
-from datetime import datetime, timedelta
-from airflow.hooks.base import BaseHook
+from airflow.operators.python import PythonOperator
+from datetime import datetime
 from airflow.exceptions import AirflowException
-from airflow.hooks.postgres_hook import PostgresHook
+from airflow.providers.postgres.hooks.postgres import PostgresHook
 from airflow.providers.common.sql.operators.sql import SQLExecuteQueryOperator
 import json
-import requests
 from lib.amadeus_api import AmadeusAPI
+from airflow.models import Variable
+
+# DEFINE VARIABLES
+exit_location = Variable.get("exit_location")
+arrival_location = Variable.get("arrival_location")
+departure_date = Variable.get("departure_date")
 
 # DEFINE DAG
 dag = DAG("flight_search",
@@ -19,7 +23,7 @@ dag = DAG("flight_search",
 # FUNCTION TO MENTION THE CLASS AND FETCH FLIGHTS
 def fetch_flights(**kwargs):
     api = AmadeusAPI("api_connection_amadeus")
-    flights = api.data_processing("REC", "MAD", "2025-06-20")
+    flights = api.data_processing(f"{exit_location}", f"{arrival_location}", f"{departure_date}")
     for flight in flights.items():
         print(flight)
 
@@ -42,10 +46,11 @@ def insert_flights_to_db(**kwargs):
         segments = json.dumps(flight.get('segments'))
 
         cursor.execute(
-            """INSERT INTO flights (flight_id, last_ticketing_date, total_price, base_price, bookable_seats, checked_bags, segments)
-            VALUES (%s, %s, %s, %s, %s, %s, %s)""",
+            """INSERT INTO flights (flight_id, last_ticketing_date, total_price, base_price, bookable_seats, checked_bags, segments, exit_location, arrival_location, departure_date)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""",
             (flight_id, last_ticketing_date, total_price,
-             base_price, bookable_seats, checked_bags, segments))
+             base_price, bookable_seats, checked_bags, segments, 
+             exit_location, arrival_location, departure_date))
 
     conn.commit()
     cursor.close()
@@ -71,6 +76,9 @@ create_table_task = SQLExecuteQueryOperator(task_id="create_table",
                                                 bookable_seats INTEGER,
                                                 checked_bags BOOLEAN,
                                                 segments JSONB,
+                                                exit_location TEXT,
+                                                arrival_location TEXT,
+                                                departure_date DATE,
                                                 created_date DATE DEFAULT CURRENT_DATE,
                                                 created_time TIME DEFAULT CURRENT_TIME)""",
                                             dag=dag)
@@ -81,6 +89,5 @@ insert_data_task = PythonOperator(
     provide_context=True,
     dag=dag
 )
-
 
 fetch_flights_task >> create_table_task >> insert_data_task
