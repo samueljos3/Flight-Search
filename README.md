@@ -5,7 +5,8 @@ Este projeto utiliza o Apache Airflow para automatizar a busca de voos promocion
 ## 📁 Estrutura do Projeto
 
 - `dags/`
-  - `flight_search_dag.py`: DAG principal do projeto.
+  - `flight_search_dag.py`: DAG principal para coleta e armazenamento dos dados.
+  - `daily_flight_report_dag`: DAG para criação do report. (inicialmente como print no log, mas será enviado no e-mail)
   - `lib/amadeus_api.py`: Classe responsável por se conectar à API da Amadeus e processar os dados retornados.
 
 ## Funcionalidades
@@ -18,7 +19,7 @@ Este projeto utiliza o Apache Airflow para automatizar a busca de voos promocion
 ## Pré-requisitos
 
 - Apache Airflow instalado e em execução.
-- As seguintes conexões devem ser criadas na interface do Airflow:
+- As seguintes conexões e variáveis devem ser criadas na interface do Airflow:
 
 ### Conexão com a API Amadeus
 
@@ -27,6 +28,12 @@ Este projeto utiliza o Apache Airflow para automatizar a busca de voos promocion
 ### Conexão com o PostgreSQL
 
 - **`postgres` em connections no airflow (Postgres)
+
+### Variáveis da aplicação
+
+- **`exit_location` exemplo: (REC) -> Recife
+- **`arrival_location` exemplo: (MAD) -> Madrid
+- **`departure_date` exemplo: (25/06/2025) 
 
 ## 📌 Observações
 
